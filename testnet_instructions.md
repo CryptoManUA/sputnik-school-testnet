@@ -2,11 +2,11 @@
 
 ## **Quick Links**
 
-Genesis: TBD
+Genesis: `https://raw.githubusercontent.com/Distributed-Validators-Synctems/sputnik-school-testnet/master/genesis.json`
 
-Block explorer: TBD
+Block explorer: https://sputnik-testnet-explorer.nodejumper.io/sputnik-school-testnet/staking
 
-Peers: TBD
+Peers: `745870cb265d8c3785da62317d46ecfaf7afa20a@95.217.164.96:26656,db0b3f18280de5ef4cb294912df6a3bf2c1a3f49@95.214.53.164:26656,7413a980948bf2208876d8bb40bb76ea957b1d97@178.215.71.199:26656,d236c62edc593476ad79bb13b028ab80e1c15d3a@128.199.142.104:26656,af6a8ce05b07dadf452fde8c645814c579d06142@88.218.60.250:26656`
 
 Chain Id: `sputnik-practice-1`
 
@@ -21,7 +21,7 @@ Here are the minimal hardware configs required for running a validator/sentry no
 ## **Software Requirements**
 
 - Ubuntu 22.04+
-- [Go v1.21+](https://golang.org/doc/install)
+- [Go v1.21](https://golang.org/doc/install)
 
 ## **Install sputnikd, Generate Wallet and Submit GenTx**
 
@@ -31,24 +31,25 @@ Sputnik app testnet binary repo
 https://github.com/Distributed-Validators-Synctems/sputnik-app-chain-practice
 
 ```
-name: SputnikApp
-server_name: sputnikd
-version: v15.2.0
-commit: 7281c9b9dc4e3087ee87f5b24e416802b52e8661
-build_tags: netgo ledger
+commit: d3ed2906478c1558e4be1a2e0f98305f7be46832
+cosmos_sdk_version: v0.47.13-ics-lsm
+go: go version go1.21.9 linux/amd64
+name: sputnik
+server_name: sputnik
+version: main-d3ed2906478c1558e4be1a2e0f98305f7be46832
 ```
 
 ### Network init
 
 ```bash
 cd ~
-sputnikd init "<moniker-name>" --chain-id sputnik-school-testnet
+sputnikd init "<moniker-name>" --chain-id sputnik-practice-1
 ```
 
 example:
 
 ```bash
-sputnikd init course-participant-1 --chain-id dvs-course-testnet-4
+sputnikd init course-participant-1 --chain-id dvs-course-testnet
 ```
 
 ### **Create Validator Key**
@@ -73,15 +74,15 @@ Check your key:
 
 This command will help you to create account in your local genesis file. It will add funds to your address. Otherwise `sputnikd getntx` command will fail because of lack of funds.
 
-`sputnikd add-genesis-account <key-name> 1000000000uatom`
+`sputnikd add-genesis-account <key-name> 1000000000usputnik`
 
 ### ****Create GenTX****
 
-Create the gentx file. Note, your gentx will be rejected if you use any amount greater than 1000000000uatom.
+Create the gentx file. Note, your gentx will be rejected if you use any amount greater than 10000000usputnik.
 
 ```
-sputnikd gentx <key-name> 1000000000uatom \
-  --chain-id=sputnik-school-testnet \
+sputnikd gentx <key-name> 10000000usputnik \
+  --chain-id=sputnik-practice-1 \
   --moniker="<moniker-name>" \
   --website=<your-node-website> \
   --details=<your-node-details> \
@@ -90,21 +91,12 @@ sputnikd gentx <key-name> 1000000000uatom \
   --commission-max-change-rate="0.01"
 ```
 
-After gentx will be ready you can find it in the `~/.sputnikd/config/gentx` directory. After that you will be required to upload it into `gentxs` directory of this repository. Please name it using following template `gentx-<validator name>.json`.
+After gentx will be ready you can find it in the `~/.sputnik/config/gentx` directory. After that you will be required to upload it into `gentxs` directory of this repository. Please name it using following template `gentx-<validator name>.json`.
 
 In order to upload this file you will need to create fork of this repository. Please click on “Fork” button in the top right corner of this page, and name it somehow or leave repository name unchanged.
-
-![fork.png](https://raw.githubusercontent.com/kuraassh/school-testnet/master/fork.png)
-
 After that you can upload `gentx` file into appropriate directory of your repository. Next, you will need to create a PR (Pull request) to add changes from your cloned repository into main repository.
-
 Please go into root directory of your repository and click on “Contribute” button.
-
-![contribute.png](https://raw.githubusercontent.com/kuraassh/school-testnet/master/contribute.png)
-
 You will see this popup window.
-
-![popup.png](https://raw.githubusercontent.com/kuraassh/school-testnet/master/popup.png)
 
 Please “Open pull request”, check data, put some description into text box field and click on “Create pull request” inside it. Congratulations you have created your first pull request!
 
@@ -112,17 +104,17 @@ Please “Open pull request”, check data, put some description into text box f
 
 ```
 sputnikd tx staking create-validator \
-  --amount=1000000000uatom \
+  --amount=10000000usputnik \
   --pubkey=$(sputnikd tendermint show-validator) \
-  --chain-id=sputnik-school-testnet \
+  --chain-id=sputnik-practice-1 \
   --moniker="<moniker-name>" \
-  --website=<your-node-website> \
+  --website="<your-node-website>"\
   --commission-rate="0.10" \
   --commission-max-rate="0.20" \
   --commission-max-change-rate="0.01" \
   --gas="auto" \
   --gas-adjustment=1.3 \
-  --gas-prices="0.1usignal" \
+  --gas-prices="0.1usputnik" \
   --from=<key_name>
 ```
 
@@ -137,69 +129,70 @@ sudo apt install curl -y
 
 To download `genesis.json` file
 ```
-curl https://raw.githubusercontent.com/Distributed-Validators-Synctems/sputnik-school-testnet/master/genesis.json > ~/.gaia/config/genesis.json
+curl https://raw.githubusercontent.com/Distributed-Validators-Synctems/sputnik-school-testnet/master/genesis.json > ~/.sputnik/config/genesis.json
 ```
 After downloading you need to verify your `genesis.json` checksum
 
 ```
-sha256sum ~/.gaia/config/genesis.json
+sha256sum ~/.sputnik/config/genesis.json
 ```
 
-you should see `16f4193398f60a06925a35afe89a164b374634a7397c198a3bb55133cdb5fbea` in the output.
+you should see `d416341bd5dd384bb78dc43c0a4413014827c54e82989df9fcc28d3d5df5e8ab` in the output.
 
 Set the peers
 ```bash
-PEERS="2cdad1c9cd0cdffd180695179928e57f4bfbe519@65.109.229.209:26656,0aaece51c70f806d5d3cdb85371ab2547ada951e@46.8.19.124:27656,ac1011c6c16cbd2cc8740e302781070da040cc4f@81.0.218.67:26656,4a52836783f21058a09082c9179d1bbe2dddb1e7@185.103.132.18:26656"
-sed -i 's|^persistent_peers *=.*|persistent_peers = "'$PEERS'"|' $HOME/.gaia/config/config.toml
+PEERS="745870cb265d8c3785da62317d46ecfaf7afa20a@95.217.164.96:26656,db0b3f18280de5ef4cb294912df6a3bf2c1a3f49@95.214.53.164:26656,7413a980948bf2208876d8bb40bb76ea957b1d97@178.215.71.199:26656,d236c62edc593476ad79bb13b028ab80e1c15d3a@128.199.142.104:26656,af6a8ce05b07dadf452fde8c645814c579d06142@88.218.60.250:26656"
+sed -i 's|^persistent_peers *=.*|persistent_peers = "'$PEERS'"|' $HOME/.sputnik/config/config.toml
+```
+
+Set `minimum-gas-prices` to `.sputnik/config/app.toml`
+```bash
+MIN_GAS_PRICES=0.001usputnik
+sed -i 's|^minimum-gas-prices *=.*|minimum-gas-prices = "'$MIN_GAS_PRICES'"|' $HOME/.sputnik/config/app.toml
 ```
 
 ### ****Set Up Cosmovisor****
 
 Set up cosmovisor to ensure any future upgrades happen flawlessly. To install Cosmovisor
 ```
-go install github.com/cosmos/cosmos-sdk/cosmovisor/cmd/cosmovisor@v1.0.0
+go install cosmossdk.io/tools/cosmovisor/cmd/cosmovisor@v1.5.0
 ```
 
 Create the required directories and files
 ```
-mkdir -p ~/.gaia/cosmovisor/genesis/bin
-mkdir -p ~/.gaia/cosmovisor/upgrades
-echo "" | sed 's/.*/{}/' > ~/.gaia/cosmovisor/genesis/upgrade-info.json
+mkdir -p ~/.sputnik/cosmovisor/genesis/bin
+mkdir -p ~/.sputnik/cosmovisor/upgrades
 ```
 
 After directories will be ready please copy `sputnikd` binaries created in the “Cosmos Hub binaries installation (sputnikd)” section into `~/.sputnikd/cosmovisor/genesis/bin` directory. You can do it using next command
 ```
-cp ~/go/bin/sputnikd ~/.gaia/cosmovisor/genesis/bin/sputnikd
+cp ~/go/bin/sputnikd ~/.sputnik/cosmovisor/genesis/bin/sputnikd
 ```
 
 ### ****Set Up sputnikd Service****
 
 Set up a service to allow cosmovisor to run in the background as well as restart automatically if it runs into any problems:
 ```
-echo "[Unit]
-Description=Cosmos Hub daemon
+sudo tee /etc/systemd/system/sputnikd.service > /dev/null << EOF
+[Unit]
+Description=Sputnik app chain daemon
 After=network-online.target
 [Service]
 Environment="DAEMON_NAME=sputnikd"
-Environment="DAEMON_HOME=${HOME}/.gaia"
+Environment="DAEMON_HOME=${HOME}/.sputnik"
 Environment="DAEMON_RESTART_AFTER_UPGRADE=true"
 Environment="DAEMON_ALLOW_DOWNLOAD_BINARIES=false"
 Environment="DAEMON_LOG_BUFFER_SIZE=512"
 Environment="UNSAFE_SKIP_BACKUP=true"
 User=$USER
-ExecStart=${HOME}/go/bin/cosmovisor start
+ExecStart=${HOME}/go/bin/cosmovisor run start
 Restart=always
 RestartSec=3
 LimitNOFILE=infinity
 LimitNPROC=infinity
 [Install]
 WantedBy=multi-user.target
-" >cosmovisor.service
-```
-
-Move this new file to the systemd directory:
-```
-sudo mv cosmovisor.service /lib/systemd/system/sputnikd.service
+EOF
 ```
 
 And start service:
@@ -214,16 +207,16 @@ How you can check the logs
 sudo journalctl -u sputnikd -f
 ```
 
-Set chain-id to `sputnik-school-testnet` (for CLI)
+Set chain-id to `sputnik-practice-1` (for CLI)
 ```
-sputnikd config chain-id sputnik-school-testnet
+sputnikd config chain-id sputnik-practice-1
 ```
 
 ## **More about validators**
 
 Please refer to the Cosmos Hub documentation on validators for a general overview of running a validator. We are using the exact same validator model and software, but with slightly different parameters and other functionality specific to the Cosmic Horizon Network.
 
-- [Run a Validator](https://hub.cosmos.network/main/validators/validator-setup.html)
-- [Validators Overview](https://hub.cosmos.network/main/validators/overview.html)
-- [Validator Security](https://hub.cosmos.network/main/validators/security.html)
-- [Validator FAQ](https://hub.cosmos.network/main/validators/validator-faq.html)
+- [Run a Validator](https://hub.cosmos.network/validators/validator-setup)
+- [Validators Overview](https://hub.cosmos.network/validators/overview)
+- [Validator Security](https://hub.cosmos.network/validators/security)
+- [Validator FAQ](https://hub.cosmos.network/validators/validator-faq)
